@@ -1,5 +1,2 @@
-pyqt5==5.15.5
-pyqtwebengine==5.15.5
-# pyqt5_sip==12.9.0
-anki>=2.1.49
-aqt>=2.1.49
+anki>=2.1.45
+aqt>=2.1.45
