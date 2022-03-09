@@ -23,5 +23,4 @@ Icons are taken from [Bootstrap Icons](https://icons.getbootstrap.com/) and lice
 
 ## TODO
 
-- [ ] encode recordings to MP3
 - [ ] make the dialog callable from the previewer too?
