@@ -1,0 +1,8 @@
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+venv/
+src/form.py
+*.ankiaddon
+*.pyc
+ankiprofile/
