@@ -1,7 +1,6 @@
 from typing import List, Any
 import datetime
 
-from aqt.main import AnkiQt
 from aqt.qt import *
 from aqt.sound import av_player
 
@@ -69,8 +68,8 @@ class RecordingWidget(QWidget):
 
 
 class RecordingHistoryDialog(QDialog):
-    def __init__(self, mw: AnkiQt, card_id: int):
-        super().__init__(parent=mw)
+    def __init__(self, parent: QWidget, card_id: int):
+        super().__init__(parent=parent)
         self.card_id = card_id
         self.setup_ui()
 

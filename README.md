@@ -20,7 +20,3 @@ Thus, recordings are not synced to AnkiWeb.
 ## Credit
 
 Icons are taken from [Bootstrap Icons](https://icons.getbootstrap.com/) and licensed under the MIT license.
-
-## TODO
-
-- [ ] make the dialog callable from the previewer too?
