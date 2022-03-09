@@ -1,14 +1,10 @@
-.PHONY: all forms zip clean install
+.PHONY: all zip clean install
 
-all: forms zip
-forms: src/form.py
+all: zip
 
 PACKAGE_NAME := record_own_voice_history
 
 zip: $(PACKAGE_NAME).ankiaddon
-
-src/form.py: designer/form.ui 
-	pyuic5 $^ > $@
 
 $(PACKAGE_NAME).ankiaddon: src/*
 	rm -f $@
@@ -24,5 +20,4 @@ clean:
 	rm -f *.pyc
 	rm -f src/*.pyc
 	rm -f src/__pycache__
-	rm -f src/form.py
 	rm -f $(PACKAGE_NAME).ankiaddon

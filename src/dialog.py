@@ -5,7 +5,6 @@ from aqt.main import AnkiQt
 from aqt.qt import *
 from aqt.sound import av_player
 
-from .form import Ui_Dialog
 from .record import get_recordings
 from .consts import *
 
@@ -61,7 +60,6 @@ class RecordingWidget(QWidget):
         self.setLayout(hbox)
 
     def on_play(self):
-        print(f"on_play: {self.file.path}")
         av_player.play_file(self.file.path)
 
     def on_delete(self):
@@ -73,17 +71,20 @@ class RecordingWidget(QWidget):
 class RecordingHistoryDialog(QDialog):
     def __init__(self, mw: AnkiQt, card_id: int):
         super().__init__(parent=mw)
-        self.form = Ui_Dialog()
-        self.form.setupUi(self)
-        self.setWindowTitle(ADDON_NAME)
         self.card_id = card_id
-        self.setup_recordings_list()
+        self.setup_ui()
 
-    def setup_recordings_list(self):
+    def setup_ui(self):
+        self.setWindowTitle(ADDON_NAME)
+        self.resize(600, 500)
+        vbox = QVBoxLayout()
+        self.label = QLabel(f"Recordings of card {self.card_id}", self)
+        vbox.addWidget(self.label)
+        list_widget = self.listWidget = QListWidget(self)
+        vbox.addWidget(list_widget)
+        self.setLayout(vbox)
         files = get_recordings(self.card_id)
-        self.form.label.setText(f"Recordings of card {self.card_id}")
 
-        list_widget = self.form.listWidget
         for file in files:
             item = QListWidgetItem(list_widget)
             list_widget.addItem(item)
