@@ -21,11 +21,9 @@ def get_card_recordings_dir(card_id: int) -> str:
 
 
 def get_most_recent_recording(card_id: int) -> str:
-    card_dir = get_card_recordings_dir(card_id)
-    # FIXME: st_ctime is not actually the creation date on Unix - not a big issue for now
-    files = sorted(os.scandir(card_dir), key=lambda f: f.stat().st_ctime)
-    if files[-1]:
-        path = files[-1].path
+    files = get_recordings(card_id)
+    if len(files) > 0:
+        path = files[0].path
         return path
     else:
         return ""
@@ -33,7 +31,8 @@ def get_most_recent_recording(card_id: int) -> str:
 
 def get_recordings(card_id: int) -> List[os.DirEntry]:
     card_dir = get_card_recordings_dir(card_id)
-    return os.scandir(card_dir)
+    # FIXME: st_ctime is not actually the creation date on Unix - not a big issue for now
+    return sorted(os.scandir(card_dir), key=lambda e: e.stat().st_ctime, reverse=True)
 
 
 def save_recording(card_id: int, path: str) -> str:
