@@ -1,4 +1,4 @@
-[Anki](https://apps.ankiweb.net/) add-on that ehances the ["Record Own Voice"](https://docs.ankiweb.net/studying.html#editing-and-more) option
+[Anki](https://apps.ankiweb.net/) add-on that enhances the ["Record Own Voice"](https://docs.ankiweb.net/studying.html#editing-and-more) option
 in the reviewer by keeping all recorded audio files and providing a GUI to see previous recordings.
 
 I wanted to record my pronunciation each time I see a word/sentence card and timestamp the recordings to track my progress.
