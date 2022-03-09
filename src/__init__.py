@@ -2,7 +2,13 @@ from typing import Tuple, List
 
 from aqt import mw
 from aqt.qt import *
-from aqt.gui_hooks import reviewer_will_show_context_menu, state_shortcuts_will_change
+from aqt.gui_hooks import (
+    reviewer_will_show_context_menu,
+    state_shortcuts_will_change,
+    reviewer_did_answer_card,
+)
+from aqt.reviewer import Reviewer
+from anki.cards import Card
 
 from .dialog import RecordingHistoryDialog
 from .consts import *
@@ -27,6 +33,12 @@ def add_state_shortcut(state: str, shortcuts: List[Tuple[str, Callable]]) -> Non
         shortcuts.append((config["shortcut"], open_dialog))
 
 
+def clear_last_recording_reference(reviewer: Reviewer, card: Card, ease) -> None:
+    # Clear reference of the last recording of the answered card so that a recording only plays on its card
+    reviewer._recordedAudio = None
+
+
 monkeypatch_recording()
 reviewer_will_show_context_menu.append(add_menu_item)
 state_shortcuts_will_change.append(add_state_shortcut)
+reviewer_did_answer_card.append(clear_last_recording_reference)

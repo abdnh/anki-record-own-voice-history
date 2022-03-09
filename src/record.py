@@ -101,7 +101,6 @@ def onRecordVoice(self) -> None:
 
 
 def onReplayRecorded(self) -> None:
-    # TODO: maybe clear _recordedAudio after each card?
     if not self._recordedAudio:
         if path := get_most_recent_recording(self.card.id):
             self._recordedAudio = path
