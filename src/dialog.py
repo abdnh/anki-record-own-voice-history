@@ -3,8 +3,9 @@ import datetime
 
 from aqt.qt import *
 from aqt.sound import av_player
+from aqt.utils import openFolder
 
-from .record import get_recordings
+from .record import get_recordings, get_card_recordings_dir
 from .consts import *
 
 
@@ -29,10 +30,8 @@ class RecordingWidgetButton(QPushButton):
     def __init__(self, icon: QIcon, parent):
         super().__init__(parent)
         self.setIcon(icon)
-        # FIXME
         self.setMaximumSize(32, 32)
         self.setFlat(True)
-        # self.setStyleSheet("QPushButton {background-color: transparent; border: 0px;}")
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
 
@@ -78,10 +77,20 @@ class RecordingHistoryDialog(QDialog):
         self.resize(600, 500)
         vbox = QVBoxLayout()
         self.label = QLabel(f"Recordings of card {self.card_id}", self)
-        vbox.addWidget(self.label)
+        self.open_folder_button = RecordingWidgetButton(FOLDER_BUTTON_ICON, self)
+        qconnect(
+            self.open_folder_button.clicked, lambda: openFolder(self.recordings_folder)
+        )
+        w = QWidget()
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.label)
+        hbox.addWidget(self.open_folder_button)
+        w.setLayout(hbox)
+        vbox.addWidget(w)
         list_widget = self.listWidget = QListWidget(self)
         vbox.addWidget(list_widget)
         self.setLayout(vbox)
+        self.recordings_folder = get_card_recordings_dir(self.card_id)
         files = get_recordings(self.card_id)
 
         for file in files:
