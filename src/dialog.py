@@ -1,4 +1,3 @@
-from typing import List, Any
 import datetime
 
 from aqt.qt import *
@@ -7,23 +6,6 @@ from aqt.utils import openFolder
 
 from .record import get_recordings, get_card_recordings_dir
 from .consts import *
-
-
-class RecordingListModel(QAbstractListModel):
-    def __init__(self, parent: QDialog):
-        super().__init__(parent=parent)
-        self.files = []
-
-    def populate(self, files: List[str]):
-        self.beginResetModel()
-        self.files.extend(files)
-        self.endResetModel()
-
-    def rowCount(self, parent: QModelIndex = ...) -> int:
-        return len(self.files)
-
-    def data(self, index: QModelIndex, role: int = ...) -> Any:
-        return self.files[index.row()]
 
 
 class RecordingWidgetButton(QPushButton):

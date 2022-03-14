@@ -1,6 +1,6 @@
 from typing import Tuple, List
 
-from aqt import mw
+import aqt
 from aqt.qt import *
 from aqt.gui_hooks import (
     reviewer_will_show_context_menu,
@@ -15,8 +15,6 @@ from anki.hooks import wrap
 from .dialog import RecordingHistoryDialog
 from .consts import *
 from .record import monkeypatch_recording
-
-config = mw.addonManager.getConfig(__name__)
 
 
 def open_dialog(parent: QWidget, card_id: int):
@@ -50,8 +48,11 @@ def add_previewer_shortcut(previewer: Previewer):
     previewer.addAction(action)
 
 
-monkeypatch_recording()
-reviewer_will_show_context_menu.append(add_menu_item)
-state_shortcuts_will_change.append(add_state_shortcut)
-reviewer_did_answer_card.append(clear_last_recording_reference)
-Previewer.open = wrap(Previewer.open, add_previewer_shortcut, "after")
+if aqt.mw:
+    mw = aqt.mw
+    config = mw.addonManager.getConfig(__name__)
+    monkeypatch_recording()
+    reviewer_will_show_context_menu.append(add_menu_item)
+    state_shortcuts_will_change.append(add_state_shortcut)
+    reviewer_did_answer_card.append(clear_last_recording_reference)
+    Previewer.open = wrap(Previewer.open, add_previewer_shortcut, "after")

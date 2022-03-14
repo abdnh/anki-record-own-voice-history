@@ -1,4 +1,4 @@
-.PHONY: all zip clean install
+.PHONY: all zip clean install check lint
 
 all: zip
 
@@ -15,6 +15,12 @@ $(PACKAGE_NAME).ankiaddon: src/*
 install: zip
 	mkdir -p ankiprofile/addons21/$(PACKAGE_NAME)
 	unzip -o $(PACKAGE_NAME).ankiaddon -d ankiprofile/addons21/$(PACKAGE_NAME)
+
+check:
+	python -m mypy src
+
+lint:
+	python -m pylint src
 
 clean:
 	rm -f *.pyc
