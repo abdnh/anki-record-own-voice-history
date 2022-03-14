@@ -17,6 +17,10 @@ Thus, recordings are not synced to AnkiWeb.
 
 ![The add-on's GUI](shot.png)
 
+## AnkiWeb
+
+You can download the add-on from its AnkiWeb page: https://ankiweb.net/shared/info/1508039970
+
 ## Credit
 
 Icons are taken from [Bootstrap Icons](https://icons.getbootstrap.com/) and licensed under the MIT license.
