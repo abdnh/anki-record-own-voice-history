@@ -24,24 +24,13 @@ def get_most_recent_recording(card_id: int) -> str:
     if len(files) > 0:
         path = files[0].path
         return path
-    else:
-        return ""
+    return ""
 
 
 def get_recordings(card_id: int) -> List[os.DirEntry]:
     card_dir = get_card_recordings_dir(card_id)
     # FIXME: st_ctime is not actually the creation date on Unix - not a big issue for now
     return sorted(os.scandir(card_dir), key=lambda e: e.stat().st_ctime, reverse=True)
-
-
-def save_recording(card_id: int, path: str) -> str:
-    card_dir = get_card_recordings_dir(card_id)
-    dest_path = os.path.join(card_dir, os.path.basename(path))
-    with open(path, "rb") as f:
-        with open(dest_path, "wb") as df:
-            df.write(f.read())
-
-    return dest_path
 
 
 # Adapted from https://github.com/ankitects/anki/blob/9c54f85be6f166735c3ab212bb497c6c6b15fd01/qt/aqt/sound.py
@@ -73,12 +62,12 @@ def record_audio(
 
     try:
         _diag = RecordDialog(parent, mw, after_record)
-    except Exception as e:
-        err_str = str(e)
+    except Exception as exc:
+        err_str = str(exc)
         showWarning(markdown(tr.qt_misc_unable_to_record(error=err_str)))
 
 
-def onRecordVoice(self) -> None:
+def onRecordVoice(self: Reviewer) -> None:  # pylint: disable=invalid-name
     def after_record(path: str) -> None:
         self._recordedAudio = path
         self.onReplayRecorded()
@@ -86,7 +75,7 @@ def onRecordVoice(self) -> None:
     record_audio(self.mw, self.mw, True, after_record)
 
 
-def onReplayRecorded(self) -> None:
+def onReplayRecorded(self: Reviewer) -> None:  # pylint: disable=invalid-name
     if not self._recordedAudio:
         if path := get_most_recent_recording(self.card.id):
             self._recordedAudio = path
@@ -96,6 +85,6 @@ def onReplayRecorded(self) -> None:
     av_player.play_file(self._recordedAudio)
 
 
-def monkeypatch_recording():
+def monkeypatch_recording() -> None:
     Reviewer.onRecordVoice = onRecordVoice
     Reviewer.onReplayRecorded = onReplayRecorded

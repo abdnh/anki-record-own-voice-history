@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Literal, Tuple
 
 import aqt
 from anki.cards import Card
@@ -17,13 +17,13 @@ from .dialog import RecordingHistoryDialog
 from .record import monkeypatch_recording
 
 
-def open_dialog(parent: QWidget, card_id: int):
+def open_dialog(parent: QWidget, card_id: int) -> None:
     if card_id:
         dialog = RecordingHistoryDialog(parent, card_id)
         dialog.show()
 
 
-def add_menu_item(reviewer, menu: QMenu):
+def add_menu_item(reviewer: Reviewer, menu: QMenu) -> None:
     action = menu.addAction(ADDON_NAME)
     action.setShortcut(config["shortcut"])
     qconnect(action.triggered, lambda: open_dialog(mw, reviewer.card.id))
@@ -36,12 +36,14 @@ def add_state_shortcut(state: str, shortcuts: List[Tuple[str, Callable]]) -> Non
         )
 
 
-def clear_last_recording_reference(reviewer: Reviewer, card: Card, ease) -> None:
+def clear_last_recording_reference(
+    reviewer: Reviewer, card: Card, ease: Literal[1, 2, 3, 4]
+) -> None:
     # Clear reference of the last recording of the answered card so that a recording only plays on its card
     reviewer._recordedAudio = None
 
 
-def add_previewer_shortcut(previewer: Previewer):
+def add_previewer_shortcut(previewer: Previewer) -> None:
     action = QAction(ADDON_NAME, previewer)
     action.setShortcut(config["shortcut"])
     qconnect(action.triggered, lambda: open_dialog(previewer, previewer.card().id))

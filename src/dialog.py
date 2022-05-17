@@ -9,7 +9,7 @@ from .record import get_card_recordings_dir, get_recordings
 
 
 class RecordingWidgetButton(QPushButton):
-    def __init__(self, icon: QIcon, parent):
+    def __init__(self, icon: QIcon, parent: QWidget):
         super().__init__(parent)
         self.setIcon(icon)
         self.setMaximumSize(32, 32)
@@ -18,7 +18,9 @@ class RecordingWidgetButton(QPushButton):
 
 
 class RecordingWidget(QWidget):
-    def __init__(self, file: os.DirEntry, item: QListWidgetItem, list_widget):
+    def __init__(
+        self, file: os.DirEntry, item: QListWidgetItem, list_widget: QListWidget
+    ):
         super().__init__(list_widget)
 
         self.file = file
@@ -39,10 +41,10 @@ class RecordingWidget(QWidget):
         hbox.addWidget(delete_button)
         self.setLayout(hbox)
 
-    def on_play(self):
+    def on_play(self) -> None:
         av_player.play_file(self.file.path)
 
-    def on_delete(self):
+    def on_delete(self) -> None:
         os.remove(self.file.path)
         self.list_widget.takeItem(self.list_widget.indexFromItem(self.item).row())
         self.close()
@@ -54,7 +56,7 @@ class RecordingHistoryDialog(QDialog):
         self.card_id = card_id
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.setWindowTitle(ADDON_NAME)
         self.resize(600, 500)
         vbox = QVBoxLayout()
@@ -63,13 +65,13 @@ class RecordingHistoryDialog(QDialog):
         qconnect(
             self.open_folder_button.clicked, lambda: openFolder(self.recordings_folder)
         )
-        w = QWidget()
+        widget = QWidget()
         hbox = QHBoxLayout()
         hbox.addWidget(self.label)
         hbox.addWidget(self.open_folder_button)
-        w.setLayout(hbox)
-        vbox.addWidget(w)
-        list_widget = self.listWidget = QListWidget(self)
+        widget.setLayout(hbox)
+        vbox.addWidget(widget)
+        list_widget = self.list_widget = QListWidget(self)
         vbox.addWidget(list_widget)
         self.setLayout(vbox)
         self.recordings_folder = get_card_recordings_dir(self.card_id)

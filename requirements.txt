@@ -1,4 +1,6 @@
-anki>=2.1.45
-aqt>=2.1.45
+anki==2.1.45
+aqt==2.1.45
+PyQt5
 mypy
 pylint
+isort
