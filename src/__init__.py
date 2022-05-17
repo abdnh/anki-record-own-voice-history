@@ -1,19 +1,19 @@
-from typing import Tuple, List
+from typing import List, Tuple
 
 import aqt
-from aqt.qt import *
-from aqt.gui_hooks import (
-    reviewer_will_show_context_menu,
-    state_shortcuts_will_change,
-    reviewer_did_answer_card,
-)
-from aqt.reviewer import Reviewer
-from aqt.browser.previewer import Previewer
 from anki.cards import Card
 from anki.hooks import wrap
+from aqt.browser.previewer import Previewer
+from aqt.gui_hooks import (
+    reviewer_did_answer_card,
+    reviewer_will_show_context_menu,
+    state_shortcuts_will_change,
+)
+from aqt.qt import *
+from aqt.reviewer import Reviewer
 
-from .dialog import RecordingHistoryDialog
 from .consts import *
+from .dialog import RecordingHistoryDialog
 from .record import monkeypatch_recording
 
 

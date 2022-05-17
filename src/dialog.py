@@ -4,8 +4,8 @@ from aqt.qt import *
 from aqt.sound import av_player
 from aqt.utils import openFolder
 
-from .record import get_recordings, get_card_recordings_dir
 from .consts import *
+from .record import get_card_recordings_dir, get_recordings
 
 
 class RecordingWidgetButton(QPushButton):

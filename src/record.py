@@ -1,13 +1,13 @@
 import os
-from typing import List
-from concurrent.futures import Future
 import time
+from concurrent.futures import Future
+from typing import List
 
 import aqt
 from aqt.qt import *
-from aqt.utils import tooltip, tr, showWarning
-from aqt.sound import av_player, RecordDialog, _encode_mp3
 from aqt.reviewer import Reviewer
+from aqt.sound import RecordDialog, _encode_mp3, av_player
+from aqt.utils import showWarning, tooltip, tr
 from markdown import markdown
 
 from .consts import *
