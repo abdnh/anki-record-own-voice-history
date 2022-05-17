@@ -1,13 +1,12 @@
 import os
 from typing import List
 from concurrent.futures import Future
-import subprocess
 import time
 
 import aqt
 from aqt.qt import *
-from aqt.utils import tooltip, tr, showWarning, startup_info
-from aqt.sound import av_player, RecordDialog, _packagedCmd, retryWait
+from aqt.utils import tooltip, tr, showWarning
+from aqt.sound import av_player, RecordDialog, _encode_mp3
 from aqt.reviewer import Reviewer
 from markdown import markdown
 
@@ -46,19 +45,6 @@ def save_recording(card_id: int, path: str) -> str:
 
 
 # Adapted from https://github.com/ankitects/anki/blob/9c54f85be6f166735c3ab212bb497c6c6b15fd01/qt/aqt/sound.py
-
-
-def _encode_mp3(src_wav: str, dst_mp3: str) -> None:
-    cmd = ["lame", src_wav, dst_mp3, "--noreplaygain", "--quiet"]
-    cmd, env = _packagedCmd(cmd)
-    try:
-        retcode = retryWait(subprocess.Popen(cmd, startupinfo=startup_info(), env=env))
-    except Exception as e:
-        raise Exception(tr.media_error_running(val=" ".join(cmd))) from e
-    if retcode != 0:
-        raise Exception(tr.media_error_running(val=" ".join(cmd)))
-
-    os.unlink(src_wav)
 
 
 def encode_mp3(mw: aqt.AnkiQt, src_wav: str, on_done: Callable[[str], None]) -> None:
