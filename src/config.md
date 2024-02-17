@@ -1,0 +1,1 @@
+-   `shortcut`: Shortcut to open add-on's dialog in the review screen.

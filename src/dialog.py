@@ -4,7 +4,8 @@ from aqt.qt import *
 from aqt.sound import av_player
 from aqt.utils import openFolder
 
-from .consts import *
+from .consts import consts
+from .gui.dialog import Dialog
 from .record import get_card_recordings_dir, get_recordings
 
 
@@ -33,9 +34,13 @@ class RecordingWidget(QWidget):
             "%Y-%m-%d %H:%M:%S"
         )
         hbox.addWidget(QLabel(date))
-        play_button = RecordingWidgetButton(PLAY_BUTTON_ICON, self)
+        play_button = RecordingWidgetButton(
+            QIcon(str(consts.dir / "icons" / "play-fill.svg")), self
+        )
         qconnect(play_button.clicked, self.on_play)
-        delete_button = RecordingWidgetButton(DELETE_BUTTON_ICON, self)
+        delete_button = RecordingWidgetButton(
+            QIcon(str(consts.dir / "icons" / "x-square-fill.svg")), self
+        )
         qconnect(delete_button.clicked, self.on_delete)
         hbox.addWidget(play_button)
         hbox.addWidget(delete_button)
@@ -50,20 +55,24 @@ class RecordingWidget(QWidget):
         self.close()
 
 
-class RecordingHistoryDialog(QDialog):
+class RecordingHistoryDialog(Dialog):
+    key = "recording_history"
+
     def __init__(self, parent: QWidget, card_id: int):
-        super().__init__(parent=parent)
         self.card_id = card_id
-        self.setup_ui()
+        super().__init__(parent)
 
     def setup_ui(self) -> None:
-        self.setWindowTitle(ADDON_NAME)
-        self.resize(600, 500)
+        super().setup_ui()
+        self.setWindowTitle(consts.name)
         vbox = QVBoxLayout()
         self.label = QLabel(f"Recordings of card {self.card_id}", self)
-        self.open_folder_button = RecordingWidgetButton(FOLDER_BUTTON_ICON, self)
+        self.open_folder_button = RecordingWidgetButton(
+            QIcon(str(consts.dir / "icons" / "folder-fill.svg")), self
+        )
         qconnect(
-            self.open_folder_button.clicked, lambda: openFolder(self.recordings_folder)
+            self.open_folder_button.clicked,
+            lambda: openFolder(str(self.recordings_folder)),
         )
         widget = QWidget()
         hbox = QHBoxLayout()

@@ -1,6 +1,7 @@
 import os
 import time
 from concurrent.futures import Future
+from pathlib import Path
 from typing import List
 
 import aqt
@@ -13,9 +14,9 @@ from markdown import markdown
 from .consts import *
 
 
-def get_card_recordings_dir(card_id: int) -> str:
-    card_dir = os.path.join(RECORDINGS_DIR, str(card_id))
-    os.makedirs(card_dir, exist_ok=True)
+def get_card_recordings_dir(card_id: int) -> Path:
+    card_dir = consts.dir / "user_files" / "recordings" / str(card_id)
+    card_dir.mkdir(exist_ok=True)
     return card_dir
 
 
@@ -38,7 +39,7 @@ def get_recordings(card_id: int) -> List[os.DirEntry]:
 
 def encode_mp3(mw: aqt.AnkiQt, src_wav: str, on_done: Callable[[str], None]) -> None:
     filename = os.path.basename(src_wav.replace(".wav", "%d.mp3" % time.time()))
-    dst_mp3 = os.path.join(get_card_recordings_dir(mw.reviewer.card.id), filename)
+    dst_mp3 = str(get_card_recordings_dir(mw.reviewer.card.id) / filename)
 
     def _on_done(fut: Future) -> None:
         if exc := fut.exception():
@@ -86,5 +87,5 @@ def onReplayRecorded(self: Reviewer) -> None:  # pylint: disable=invalid-name
 
 
 def monkeypatch_recording() -> None:
-    Reviewer.onRecordVoice = onRecordVoice
-    Reviewer.onReplayRecorded = onReplayRecorded
+    Reviewer.onRecordVoice = onRecordVoice  # type: ignore
+    Reviewer.onReplayRecorded = onReplayRecorded  # type: ignore

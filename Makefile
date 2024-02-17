@@ -1,33 +1,33 @@
-.PHONY: all zip clean install fix mypy pylint
+.PHONY: all zip ankiweb vendor fix mypy pylint lint test sourcedist clean
 
-all: zip
+all: zip ankiweb
 
-PACKAGE_NAME := record_own_voice_history
+zip:
+	python -m ankiscripts.build --type package --qt all --exclude user_files/**/*
 
-zip: $(PACKAGE_NAME).ankiaddon
+ankiweb:
+	python -m ankiscripts.build --type ankiweb --qt all --exclude user_files/**/*
 
-$(PACKAGE_NAME).ankiaddon: src/*
-	rm -f $@
-	rm -rf src/__pycache__
-	( cd src/; zip -r ../$@ * )
-
-# install in test profile
-install: zip
-	mkdir -p ankiprofile/addons21/$(PACKAGE_NAME)
-	cp -r src/. ankiprofile/addons21/$(PACKAGE_NAME)
+vendor:
+	python -m ankiscripts.vendor
 
 fix:
-	python -m black src
-	python -m isort src
+	python -m black src tests --exclude="forms|vendor"
+	python -m isort src tests
 
 mypy:
-	python -m mypy src
+	-python -m mypy src tests
 
 pylint:
-	python -m pylint src
+	-python -m pylint src tests
+
+lint: mypy pylint
+
+test:
+	python -m  pytest --cov=src --cov-config=.coveragerc
+
+sourcedist:
+	python -m ankiscripts.sourcedist
 
 clean:
-	rm -f *.pyc
-	rm -f src/*.pyc
-	rm -f src/__pycache__
-	rm -f $(PACKAGE_NAME).ankiaddon
+	rm -rf build/

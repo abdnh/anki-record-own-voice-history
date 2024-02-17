@@ -1,0 +1,8 @@
+{
+    "properties": {
+        "shortcut": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
