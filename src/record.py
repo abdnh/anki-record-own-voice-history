@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import os
 import time
 from concurrent.futures import Future
 from pathlib import Path
-from typing import List
 
-import aqt
+from aqt import gui_hooks, mw
+from aqt.main import AnkiQt
 from aqt.qt import *
 from aqt.reviewer import Reviewer
 from aqt.sound import RecordDialog, _encode_mp3, av_player
@@ -20,15 +22,14 @@ def get_card_recordings_dir(card_id: int) -> Path:
     return card_dir
 
 
-def get_most_recent_recording(card_id: int) -> str:
+def get_most_recent_recording(card_id: int) -> str | None:
     files = get_recordings(card_id)
-    if len(files) > 0:
-        path = files[0].path
-        return path
-    return ""
+    if files:
+        return files[0].path
+    return None
 
 
-def get_recordings(card_id: int) -> List[os.DirEntry]:
+def get_recordings(card_id: int) -> list[os.DirEntry]:
     card_dir = get_card_recordings_dir(card_id)
     # FIXME: st_ctime is not actually the creation date on Unix - not a big issue for now
     return sorted(os.scandir(card_dir), key=lambda e: e.stat().st_ctime, reverse=True)
@@ -37,7 +38,7 @@ def get_recordings(card_id: int) -> List[os.DirEntry]:
 # Adapted from https://github.com/ankitects/anki/blob/9c54f85be6f166735c3ab212bb497c6c6b15fd01/qt/aqt/sound.py
 
 
-def encode_mp3(mw: aqt.AnkiQt, src_wav: str, on_done: Callable[[str], None]) -> None:
+def encode_mp3(mw: AnkiQt, src_wav: str, on_done: Callable[[str], None]) -> None:
     filename = os.path.basename(src_wav.replace(".wav", "%d.mp3" % time.time()))
     dst_mp3 = str(get_card_recordings_dir(mw.reviewer.card.id) / filename)
 
@@ -53,7 +54,7 @@ def encode_mp3(mw: aqt.AnkiQt, src_wav: str, on_done: Callable[[str], None]) -> 
 
 
 def record_audio(
-    parent: QWidget, mw: aqt.AnkiQt, encode: bool, on_done: Callable[[str], None]
+    parent: QWidget, mw: AnkiQt, encode: bool, on_done: Callable[[str], None]
 ) -> None:
     def after_record(path: str) -> None:
         if not encode:
@@ -68,7 +69,7 @@ def record_audio(
         showWarning(markdown(tr.qt_misc_unable_to_record(error=err_str)))
 
 
-def onRecordVoice(self: Reviewer) -> None:  # pylint: disable=invalid-name
+def onRecordVoice(self: Reviewer) -> None:
     def after_record(path: str) -> None:
         self._recordedAudio = path
         self.onReplayRecorded()
@@ -76,7 +77,7 @@ def onRecordVoice(self: Reviewer) -> None:  # pylint: disable=invalid-name
     record_audio(self.mw, self.mw, True, after_record)
 
 
-def onReplayRecorded(self: Reviewer) -> None:  # pylint: disable=invalid-name
+def onReplayRecorded(self: Reviewer) -> None:
     if not self._recordedAudio:
         if path := get_most_recent_recording(self.card.id):
             self._recordedAudio = path
@@ -86,6 +87,17 @@ def onReplayRecorded(self: Reviewer) -> None:  # pylint: disable=invalid-name
     av_player.play_file(self._recordedAudio)
 
 
-def monkeypatch_recording() -> None:
+def on_reviewer_will_replay_recording(path: str) -> str:
+    if not path:
+        path = get_most_recent_recording(mw.reviewer.card.id)
+    return path
+
+
+def patch_recording() -> None:
     Reviewer.onRecordVoice = onRecordVoice  # type: ignore
-    Reviewer.onReplayRecorded = onReplayRecorded  # type: ignore
+    if hasattr(gui_hooks, "reviewer_will_replay_recording"):
+        gui_hooks.reviewer_will_replay_recording.append(
+            on_reviewer_will_replay_recording
+        )
+    else:
+        Reviewer.onReplayRecorded = onReplayRecorded  # type: ignore

@@ -20,7 +20,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "vendor"))
 from .config import config
 from .consts import consts
 from .dialog import RecordingHistoryDialog
-from .record import monkeypatch_recording
+from .record import patch_recording
 
 
 def open_dialog(parent: QWidget, card_id: int) -> None:
@@ -56,7 +56,7 @@ def add_previewer_shortcut(previewer: Previewer) -> None:
     previewer.addAction(action)
 
 
-monkeypatch_recording()
+patch_recording()
 reviewer_will_show_context_menu.append(add_menu_item)
 state_shortcuts_will_change.append(add_state_shortcut)
 reviewer_did_answer_card.append(clear_last_recording_reference)
