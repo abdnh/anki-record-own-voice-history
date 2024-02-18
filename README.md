@@ -31,7 +31,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
 
 ## Support & feature requests
 
-Please post any questions, bug reports, or feature requests in the [support page](https://forums.ankiweb.net/c/add-ons/11) or the [issue tracker](https://github.com/abdnh/anki-record-own-voice-history/issues).
+Please post any questions, bug reports, or feature requests in the [support page](https://forums.ankiweb.net/t/record-own-voice-history/18403) or the [issue tracker](https://github.com/abdnh/anki-record-own-voice-history/issues).
 
 If you want priority support for your feature/help request, I'm available for hire.
 Get in touch via [email](mailto:abdo@abdnh.net) or the UpWork link below.
