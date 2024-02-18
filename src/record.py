@@ -18,7 +18,7 @@ from .consts import *
 
 def get_card_recordings_dir(card_id: int) -> Path:
     card_dir = consts.dir / "user_files" / "recordings" / str(card_id)
-    card_dir.mkdir(exist_ok=True)
+    card_dir.mkdir(exist_ok=True, parents=True)
     return card_dir
 
 
